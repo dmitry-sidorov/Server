@@ -49,9 +49,16 @@ const prettifyDate = timestamp => {
 };
 
 const getEventDescription = event => {
-  const eventDate = prettifyDate(event.date);
-  const eventAddress = event.address || '';
-  return `\n<b>${event.title}</b>\n${eventAddress}\n${eventDate}`;
+  const title = `<b>${event.title}</b>`;
+  const date = prettifyDate(event.date);
+  const address = `<i>${event.address || ''}</i>`;
+  const maxDescLength = 90;
+  let description = event.description.replace(/(<([^>]+)>)/gi, '');
+
+  if (description.length > maxDescLength) {
+    description = `${description.slice(0, maxDescLength)}...`;
+  }
+  return `\n${title}\n${date}\n${address}\n\n${description}`;
 };
 
 // Реагируем на ответы пользователя
@@ -190,8 +197,9 @@ module.exports = {
   // метод рассылки
   mailing(eventId, notifyType = 'invite') {
     const event = {}; // объект для передачи в notify
+    const notifications = []; // все промисы после вызова notify для всех юзеров
 
-    controller
+    return controller
       .getEventById(eventId)
       .then(eventData => {
         event.id = eventId;
@@ -203,6 +211,7 @@ module.exports = {
       .then(topicData => {
         event.title = topicData.title;
         event.address = topicData.address;
+        event.description = topicData.description;
 
         event.users.forEach(user => {
           if (
@@ -210,36 +219,38 @@ module.exports = {
             (user.status === 'accepted' &&
               (notifyType === 'remind' || notifyType === 'apology'))
           ) {
-            controller
-              .getUserByUserId(user.userId)
-              .then(userData => this.notify(notifyType, userData, event))
-              .then(() => {
-                let newStatus;
-                if (user.status === 'pending') {
-                  newStatus = 'notified';
-                }
-                if (user.status === 'accepted') {
-                  newStatus = 'reminded';
-                }
-                return controller.setUserStatusByEventId(
-                  eventId,
-                  user.userId,
-                  newStatus
-                );
-              })
-              .then(() => {
-                if (!user.notificationDate) {
-                  controller.setNotificationDateByEventId(
+            notifications.push(
+              controller
+                .getUserByUserId(user.userId)
+                .then(userData => this.notify(notifyType, userData, event))
+                .then(() => {
+                  let newStatus;
+                  if (user.status === 'pending') {
+                    newStatus = 'notified';
+                  }
+                  if (user.status === 'accepted') {
+                    newStatus = 'reminded';
+                  }
+                  return controller.setUserStatusByEventId(
                     eventId,
                     user.userId,
-                    Date.now()
+                    newStatus
                   );
-                }
-              })
-              .catch(err => logger.error(err.message));
+                })
+                .then(() => {
+                  if (!user.notificationDate) {
+                    controller.setNotificationDateByEventId(
+                      eventId,
+                      user.userId,
+                      Date.now()
+                    );
+                  }
+                })
+            );
           }
         });
       })
+      .then(() => Promise.all(notifications))
       .catch(err => logger.error(err.message));
   }
 };

@@ -70,19 +70,11 @@ function userMethodsFactory(userModelName) {
     );
   };
 
-  const updateUserInfoByUserId = (_id, info) => {
-    nullAndUndefinedValidation(_id, info);
-    return Users.findOneAndUpdate(
-      { _id },
-      {
-        $set: {
-          firstName: info.first_name,
-          lastName: info.last_name,
-          avatar: info.photo_url,
-          username: info.username
-        }
-      }
-    );
+  const updateUserInfoByUserId = (id, info) => {
+    nullAndUndefinedValidation(id, info);
+    const update = { $set: info };
+    const options = { new: true, runValidators: true };
+    return Users.findByIdAndUpdate(id, update, options).exec();
   };
 
   const removeUserByUserId = _id => {

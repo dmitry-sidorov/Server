@@ -13,8 +13,8 @@ const createTestDatabase = (mongoUri, projectName) => {
     'logs',
     'archives'
   ];
-  const folder = './../collectionBackups/';
-  const extension = '-copy.json';
+  const folder = './collectionBackups/';
+  const extension = '-bson.json';
   return new Promise((resolve, reject) => {
     collections.forEach(collection => {
       const path = folder + collection + extension;

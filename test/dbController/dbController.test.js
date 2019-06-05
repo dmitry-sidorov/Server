@@ -8,7 +8,10 @@ const ClassController = require('../../server/database/dbController');
 const testMongoUri =
   'mongodb://demoman:wgforge1@ds261716.mlab.com:61716/test-db';
 
-// connectTestDatabase(testMongoUri);
+createTestDatabase(testMongoUri, 'test-db').then(() => {
+  // connectTestDatabase(testMongoUri);
+});
+
 const methodNames = [
   'user',
   'topic',

@@ -1,8 +1,7 @@
 const { MongoClient } = require('mongodb');
 const parseBSONtoJSON = require('./parseBSONtoJSON');
 
-const writeDatabase = (mongoUri, databaseName, collectionName, dataBSON) => {
-  const data = parseBSONtoJSON(dataBSON);
+const writeDatabase = (mongoUri, databaseName, collectionName, data) => {
   MongoClient.connect(
     mongoUri,
     { useNewUrlParser: true },

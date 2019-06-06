@@ -1,4 +1,5 @@
 /* eslint-disable dot-notation */
+const path = require('path');
 const writeDatabase = require('./writeDatabase');
 const readData = require('./readData');
 
@@ -13,12 +14,15 @@ const createTestDatabase = (mongoUri, projectName) => {
     'logs',
     'archives'
   ];
-  const folder = './collectionBackups/';
-  const extension = '-bson.json';
+  const folder = '../collectionBackups/';
+  const extension = '.json';
   return new Promise((resolve, reject) => {
     collections.forEach(collection => {
-      const path = folder + collection + extension;
-      readData(path).then(data => {
+      const resolvedPath = path.resolve(
+        __dirname,
+        folder + collection + extension
+      );
+      readData(resolvedPath).then(data => {
         writeDatabase(mongoUri, projectName, collection, data);
       });
     });

@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-const parseBSONtoJSON = require('./parseBSONtoJSON');
+const replaceMongoServiceSymbols = require('./replaceMongoServiceSymbols');
 
 const writeDatabase = (mongoUri, databaseName, collectionName, data) => {
   MongoClient.connect(
@@ -11,24 +11,26 @@ const writeDatabase = (mongoUri, databaseName, collectionName, data) => {
         .db(databaseName)
         .collection(collectionName)
         .deleteMany({})
-        .then(deleteError => {
-          if (deleteError) throw deleteError;
+        .then(() => {
           console.log(
             `${collectionName} collection has been successfuly deleted`
           );
+        })
+        .catch(() => {
+          console.log(`deleteMany operation error at: ${collectionName}`);
         });
       client
         .db(databaseName)
         .collection(collectionName)
         .insertMany(data)
-        .then(error => {
-          if (error) throw error;
+        .then(() => {
           console.log(
             `${collectionName} collection has been wtiten successfuly to database ${databaseName}!`
           );
         })
         .catch(insertError => {
-          console.log('insertMany error:', insertError);
+          console.log(`insertMany operation error at: ${collectionName}`);
+          console.log(insertError);
         });
       client.close();
     }

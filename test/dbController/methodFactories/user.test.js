@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const config = require('../../../server/config/config');
 const DBController = require('../../../server/database/dbController');
 const connectTestDatabase = require('./../lib/connectTestDatabase');
-const usersBackup = require('../collectionBackups/users-bson.json');
 const cloneObject = require('./../lib/cloneObject');
 const createTestDatabase = require('./../lib/createTestDatabase');
 
@@ -30,6 +29,7 @@ describe('dbController user methods tests', () => {
     console.log('tests done, May the Force be with you young Jedi');
   });
 
+  /*
   test('getAllUsers works', done => {
     controller.getAllUsers().then(controllerAllUsers => {
       expect(controllerAllUsers).toHaveLength(usersBackup.length);
@@ -48,6 +48,7 @@ describe('dbController user methods tests', () => {
     });
   });
 
+
   test('getUserByTelegramId works', done => {
     const userTelegramId = usersBackup[2]['telegramId'];
     controller.getUserByTelegramId(userTelegramId).then(controllerUser => {
@@ -64,24 +65,24 @@ describe('dbController user methods tests', () => {
     username: 'andrusha'
   };
 
-  // test('createNewUser works', done => {
-  //   const mongoPropertyNames = {
-  //     first_name: 'firstName',
-  //     last_name: 'lastName',
-  //     id: 'telegramId',
-  //     photo_url: 'avatar',
-  //     username: 'username'
-  //   };
-  //   const userProps = Object.keys(newUser);
-  //   controller.createNewUser(newUser).then(user => {
-  //     const newMongoUser = cloneObject(user);
-  //     userProps.forEach(property => {
-  //       const mongoProperty = mongoPropertyNames[property];
-  //       expect(newMongoUser[mongoProperty]).toEqual(newUser[property]);
-  //       done();
-  //     });
-  //   });
-  // });
+  test('createNewUser works', done => {
+    const mongoPropertyNames = {
+      first_name: 'firstName',
+      last_name: 'lastName',
+      id: 'telegramId',
+      photo_url: 'avatar',
+      username: 'username'
+    };
+    const userProps = Object.keys(newUser);
+    controller.createNewUser(newUser).then(user => {
+      const newMongoUser = cloneObject(user);
+      userProps.forEach(property => {
+        const mongoProperty = mongoPropertyNames[property];
+        expect(newMongoUser[mongoProperty]).toEqual(newUser[property]);
+        done();
+      });
+    });
+  });
 
   test('updateUserInfoByUserId works', async done => {
     const user = await controller.getUserByTelegramId(newUser.id);
@@ -96,7 +97,7 @@ describe('dbController user methods tests', () => {
     });
   });
 
-  /*
+  
   test('removeUserByUserId works', done => {
     expect(false).toBeTruthy();
     done();

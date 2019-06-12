@@ -1,3 +1,4 @@
+// eslint-disable
 {"_id":{"$oid":"5cee4fa171b56c001e09e5cf"},"topicId":{"$oid":"5ce783df0d16c928e8a22055"},"participants":[{"status":"notified","userId":{"$oid":"5cee4b8a9193c9bb547994b8"},"notificationDate":{"$numberLong":"1559124803937"}},{"status":"pending","userId":{"$oid":"5cee4e8d9193c9bb5479cb50"}}],"date":{"$numberLong":"1403797975558"},"__v":{"$numberInt":"0"}}
 {"_id":{"$oid":"5cee68e2d721c3001e5bed73"},"topicId":{"$oid":"5ce783df0d16c928e8a22055"},"participants":[{"status":"notified","userId":{"$oid":"5cee5f619193c9bb547b2173"},"notificationDate":{"$numberLong":"1559128294277"}},{"status":"notified","userId":{"$oid":"5ceda2419193c9bb54703fe0"},"notificationDate":{"$numberLong":"1559128295142"}}],"date":{"$numberLong":"1403797975558"},"__v":{"$numberInt":"0"}}
 {"_id":{"$oid":"5cf0194e857f45001ec84c76"},"topicId":{"$oid":"5ceea827d3f76b001e7d4d4b"},"participants":[],"date":{"$numberLong":"1557526920000"},"__v":{"$numberInt":"0"}}

@@ -72,7 +72,15 @@ function userMethodsFactory(userModelName) {
 
   const updateUserInfoByUserId = (id, info) => {
     nullAndUndefinedValidation(id, info);
-    const update = { $set: info };
+    const allowedFields = ['username', 'firstName', 'lastName', 'avatar'];
+    const receivedKeys = Object.keys(info).filter(key => {
+      return allowedFields.includes(key);
+    });
+    const updateInfo = {};
+    receivedKeys.forEach(key => {
+      updateInfo[key] = info[key];
+    });
+    const update = { $set: updateInfo };
     const options = { new: true, runValidators: true };
     return Users.findByIdAndUpdate(id, update, options).exec();
   };
